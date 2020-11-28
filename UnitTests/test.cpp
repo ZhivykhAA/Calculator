@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "../Calculator/Calculator.h"
+#include "../Calculator/Calculator.cpp"
 
 TEST(Calculator, Test1) {
 	ASSERT_EQ("1", calculator("-1 + 5 - 3"));

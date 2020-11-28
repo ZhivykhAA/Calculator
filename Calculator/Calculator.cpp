@@ -1,22 +1,16 @@
-п»ї#include <iostream>
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <string>
+#include "Calculator.h"
 
-using namespace std;
-
-// РїСЂРѕРІРµСЂРєР° РЅР° С‡РёСЃР»Рѕ
+// проверка на число
 bool isDig(char c) {
 	return c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9';
 }
 
-// РїСЂРѕРІРµСЂРєР° РЅР° РѕРїРµСЂР°С‚РѕСЂ
+// проверка на оператор
 bool isOper(char c) {
 	return c == '+' || c == '-' || c == '*' || c == '/';
 }
 
-// РѕРїРµСЂР°С†РёСЏ
+// операция
 double oper(double a, double b, char c) {
 	double res = 0;
 	if (c == '+') {
@@ -29,12 +23,15 @@ double oper(double a, double b, char c) {
 		return a * b;
 	}
 	else if (c == '/') {
+		if (b == 0) {
+			throw - 1;
+		}
 		return a / b;
 	}
 	return res;
 }
 
-// СЃС‡РёС‚С‹РІР°РµРј С‡РёСЃР»Рѕ
+// считываем число
 double number(const string &str, int &i) {
 	string numStr = "";
 	double num;
@@ -54,19 +51,19 @@ double number(const string &str, int &i) {
 	return num;
 }
 
-// РёРіРЅРѕСЂРёСЂСѓРµРј РїСЂРѕР±РµР»С‹
+// игнорируем пробелы
 void spaces(const string &str, int &i) {
 	while (i < str.size() && str[i] == ' ') {
 		++i;
 	}
 }
 
-// РїСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ '('
+// проверяем наличие '('
 bool openParenth(const string &str, int &i, int &countP) {
-	// РµСЃР»Рё РїСЂРѕР±РµР»С‹
+	// если пробелы
 	spaces(str, i);
 
-	// РµСЃР»Рё РµСЃС‚СЊ РјРёРЅСѓСЃ РїРµСЂРµРґ С‡РёСЃР»РѕРј
+	// если есть минус перед числом
 	while (i < str.size() && str[i] == '(') {
 		++i;
 		++countP;
@@ -76,12 +73,12 @@ bool openParenth(const string &str, int &i, int &countP) {
 	return false;
 }
 
-// РїСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ ')'
+// проверяем наличие ')'
 bool closeParenth(const string &str, int &i, int &countP) {
-	// РµСЃР»Рё РїСЂРѕР±РµР»С‹
+	// если пробелы
 	spaces(str, i);
 
-	// РµСЃР»Рё РµСЃС‚СЊ РјРёРЅСѓСЃ РїРµСЂРµРґ С‡РёСЃР»РѕРј
+	// если есть минус перед числом
 	while (i < str.size() && str[i] == ')') {
 		++i;
 		--countP;
@@ -91,12 +88,12 @@ bool closeParenth(const string &str, int &i, int &countP) {
 	return false;
 }
 
-// РёС‰РµРј РѕРїРµСЂР°С‚РѕСЂ
+// ищем оператор
 char lookOper(const string &str, int &i) {
-	// РµСЃР»Рё РїСЂРѕР±РµР»С‹
+	// если пробелы
 	spaces(str, i);
 
-	// РѕРїРµСЂР°С‚РѕСЂ
+	// оператор
 	if (i < str.size() && isOper(str[i])) {
 		++i;
 		return str[i - 1];
@@ -104,51 +101,42 @@ char lookOper(const string &str, int &i) {
 	return NULL;
 }
 
-// СЃС‡РёС‚С‹РІР°РµРј С‡РёСЃР»Рѕ Рё СЃР»РµРґСѓСЋС‰РёР№ Р·РЅР°Рє
+
+// считываем число и следующий знак
 void numOp(const string &str, int &i, double &num, char &op, bool &openP, bool &closeP, int &countP) {
-	
-	// РїСЂРѕРІРµСЂСЏРµРј '('
+
+	// проверяем '('
 	openP = openParenth(str, i, countP);
 
-	// РµСЃР»Рё РїСЂРѕР±РµР»С‹
+	// если пробелы
 	spaces(str, i);
 
-	// РµСЃР»Рё С‡РёСЃР»Рѕ
+	// если число
 	if (i < str.size() && isDig(str[i])) {
 		num = number(str, i);
 	}
 
-	// РїСЂРѕРІРµСЂСЏРµРј ')'
+	// проверяем ')'
 	if (closeParenth(str, i, countP)) {
 		closeP = true;
 		return;
 	}
 
-	// РѕРїРµСЂР°С‚РѕСЂ
+	// оператор
 	op = lookOper(str, i);
-}
 
-
-void openPA(const string &str, int &i, double a, double b, char op1, char &op2, bool &openP, bool &closeP, int &countP) {
-
-}
-
-void openPB(const string &str, int &i, double a, double b, char op1, char &op2, bool &openP, bool &closeP, int &countP) {
-	if (i < str.size() && isOper(str[i])) {
-		op2 = str[i];
+	// проверка на сторонние символы
+	string incorrectChar = "";
+	while (i < str.size() && str[i] != '(' && str[i] != ')' && str[i] != ' ' && !isDig(str[i]) && !isOper(str[i])) {
+		incorrectChar += str[i];
 		++i;
 	}
-	else {
-		if (i < str.size() && str[i] == ')') {
-			++i;
-			--countP;
-		}
-		op2 = NULL;
+	if (!incorrectChar.empty()) {
+		throw "некорректный ввод, строка содержит недопустимое выражение " + incorrectChar;
 	}
-	openP = false;
 }
 
-
+// калькулятор
 double calculate(const string &str, int &i, double a, double b, char op1, char op2, bool &openP, bool &closeP, int &countP) {
 	double res = 0;
 
@@ -160,108 +148,61 @@ double calculate(const string &str, int &i, double a, double b, char op1, char o
 				res = calculate(str, i, a, b, op1, NULL, openP, closeP, countP);
 				a = res;
 				op1 = lookOper(str, i);
-				/*if (i < str.size()) {
-					a = res;
-					op1 = lookOper(str, i);
-				}
-				else {
-					op1 = NULL;
-				}*/
 				openP = false;
 			}
 
 			numOp(str, i, b, op2, openP, closeP, countP);
-			if (openP) {
+			if (openP && !closeP) {
 				b = calculate(str, i, b, 0, op2, NULL, openP, closeP, countP);
-				openPB(str, i, a, b, op1, op2, openP, closeP, countP);
-				/*b = calculate(str, i, b, 0, op2, NULL, openP, closeP, countP);
-				if (i < str.size() && isOper(str[i])) {
-					op2 = str[i];
-					++i;
-				}
-				else {
-					if (str[i] == ')') {
-						++i;
-						--countP;
-					}
-					op2 = NULL;
-				}
-				openP = false;*/
+				op2 = lookOper(str, i);
 			}
-			if (closeP) {
-				op2 = NULL;
-			}
+
 		}
-		/*else if (op1 == NULL) {
-			numOp(str, i, a, op1, openP, closeP, countP);
-		}*/
 		else if (op2 == NULL) {
 			numOp(str, i, b, op2, openP, closeP, countP);
-			if (openP) {
+			if (openP && !closeP) {
 				b = calculate(str, i, b, 0, op2, NULL, openP, closeP, countP);
-				openPB(str, i, a, b, op1, op2, openP, closeP, countP);
-				/*b = calculate(str, i, b, 0, op2, NULL, openP, closeP, countP);
-				if (i < str.size() && isOper(str[i])) {
-					op2 = str[i];
-					++i;
-				}
-				else {
-					if (i < str.size() && str[i] == ')') {
-						++i;
-						--countP;
-					}
-					op2 = NULL;
-				}
-				openP = false;*/
-			}
-			if (closeP) {
-				op2 = NULL;
+				op2 = lookOper(str, i);
 			}
 		}
 
-		if (((op1 == '+' || op1 == '-') && (op2 == '+' || op2 == '-' || op2 == NULL)) || 
+		if (((op1 == '+' || op1 == '-') && (op2 == '+' || op2 == '-' || op2 == NULL)) ||
 			((op1 == '*' || op1 == '/') && (op2 == '*' || op2 == '/' || op2 == NULL)) ||
 			((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-' || op2 == NULL))) {
 			res = oper(a, b, op1);
-			a = res;
-			if (closeP || str[i - 1] == ')') {
+			if (closeP || closeParenth(str, i, countP)) {
 				closeP = false;
 				return res;
 			}
 			else {
+				a = res;
 				op1 = op2;
+				b = NULL;
+				op2 = NULL;
 			}
-			b = NULL;
-			op2 = NULL;
 		}
 		else if ((op1 == '+' || op1 == '-') && (op2 == '*' || op2 == '/')) {
 			b = calculate(str, i, b, 0, op2, NULL, openP, closeP, countP);
 			res = oper(a, b, op1);
+			return res;
 		}
 	}
 	return res;
 }
 
-
-int main()
-{
-	string str = "";
-	double res = 0;
-
-	getline(cin, str);
-
+string calculator(const string &str) {
 	int i = 0, countP = 0;
-	bool openP = false;
-	bool closeP = false;
-	cout << calculate(str, i, 0, 0, NULL, NULL, openP, closeP, countP) << endl << countP;
+	bool openP = false, closeP = false;
 
-	
-	
-	/*int a = 1;
-
-	while (a) {
-		
-		cout << "\nInput 1: ";
-		cin >> a;
-	}*/
+	try {
+		ostringstream ss;
+		ss << round(calculate(str, i, 0, 0, NULL, NULL, openP, closeP, countP) * 100) / 100;
+		return ss.str();
+	}
+	catch (int) {
+		return "ошибка при делении на 0";
+	}
+	catch (const string &exception) {
+		return exception;
+	}
 }
