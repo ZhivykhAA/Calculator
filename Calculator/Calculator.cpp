@@ -1,16 +1,16 @@
 #include "Calculator.h"
 
-// проверка на число
+// checking for a number
 bool isDig(char c) {
 	return c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9';
 }
 
-// проверка на оператор
+// checking for an operator
 bool isOper(char c) {
 	return c == '+' || c == '-' || c == '*' || c == '/';
 }
 
-// операция
+// operator
 double oper(double a, double b, char c) {
 	double res = 0;
 	if (c == '+') {
@@ -31,7 +31,7 @@ double oper(double a, double b, char c) {
 	return res;
 }
 
-// считываем число
+// reading the number
 double number(const string &str, int &i) {
 	string numStr = "";
 	double num;
@@ -51,19 +51,18 @@ double number(const string &str, int &i) {
 	return num;
 }
 
-// игнорируем пробелы
+// ignore the spaces
 void spaces(const string &str, int &i) {
 	while (i < str.size() && str[i] == ' ') {
 		++i;
 	}
 }
 
-// проверяем наличие '('
+// checking for availability '('
 bool openParenth(const string &str, int &i, int &countP) {
-	// если пробелы
+	// ignore the spaces
 	spaces(str, i);
 
-	// если есть минус перед числом
 	while (i < str.size() && str[i] == '(') {
 		++i;
 		++countP;
@@ -73,12 +72,11 @@ bool openParenth(const string &str, int &i, int &countP) {
 	return false;
 }
 
-// проверяем наличие ')'
+// checking for availability ')'
 bool closeParenth(const string &str, int &i, int &countP) {
-	// если пробелы
+	// ignore the spaces
 	spaces(str, i);
 
-	// если есть минус перед числом
 	while (i < str.size() && str[i] == ')') {
 		++i;
 		--countP;
@@ -88,12 +86,12 @@ bool closeParenth(const string &str, int &i, int &countP) {
 	return false;
 }
 
-// ищем оператор
+// looking for an operator
 char lookOper(const string &str, int &i) {
-	// если пробелы
+	// ignore the spaces
 	spaces(str, i);
 
-	// оператор
+	// operator
 	if (i < str.size() && isOper(str[i])) {
 		++i;
 		return str[i - 1];
@@ -102,41 +100,41 @@ char lookOper(const string &str, int &i) {
 }
 
 
-// считываем число и следующий знак
+// read the number and the next operator
 void numOp(const string &str, int &i, double &num, char &op, bool &openP, bool &closeP, int &countP) {
 
-	// проверяем '('
+	// checking for availability '('
 	openP = openParenth(str, i, countP);
 
-	// если пробелы
+	// ignore the spaces
 	spaces(str, i);
 
-	// если число
+	// try reading the number
 	if (i < str.size() && isDig(str[i])) {
 		num = number(str, i);
 	}
 
-	// проверяем ')'
+	// checking for availability ')'
 	if (closeParenth(str, i, countP)) {
 		closeP = true;
 		return;
 	}
 
-	// оператор
+	// operator
 	op = lookOper(str, i);
 
-	// проверка на сторонние символы
+	// checking for invalid characters
 	string incorrectChar = "";
 	while (i < str.size() && str[i] != '(' && str[i] != ')' && str[i] != ' ' && !isDig(str[i]) && !isOper(str[i])) {
 		incorrectChar += str[i];
 		++i;
 	}
 	if (!incorrectChar.empty()) {
-		throw "некорректный ввод, строка содержит недопустимое выражение " + incorrectChar;
+		throw "invalid input, the string contains an invalid expression " + incorrectChar;
 	}
 }
 
-// калькулятор
+// calculation
 double calculate(const string &str, int &i, double a, double b, char op1, char op2, bool &openP, bool &closeP, int &countP) {
 	double res = 0;
 
@@ -200,7 +198,7 @@ string calculator(const string &str) {
 		return ss.str();
 	}
 	catch (int) {
-		return "ошибка при делении на 0";
+		return "error when dividing by 0";
 	}
 	catch (const string &exception) {
 		return exception;

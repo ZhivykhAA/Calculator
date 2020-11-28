@@ -7,34 +7,34 @@
 
 using namespace std;
 
-// проверка на число
+// checking for a number
 bool isDig(char c);
 
-// проверка на оператор
+// checking for an operator
 bool isOper(char c);
 
-// операция
+// operator
 double oper(double a, double b, char c);
 
-// считываем число
+// reading the number
 double number(const string &str, int &i);
 
-// игнорируем пробелы
+// ignore the spaces
 void spaces(const string &str, int &i);
 
-// проверяем наличие '('
+// checking for availability '('
 bool openParenth(const string &str, int &i, int &countP);
 
-// проверяем наличие ')'
+// checking for availability ')'
 bool closeParenth(const string &str, int &i, int &countP);
 
-// ищем оператор
+// looking for an operator
 char lookOper(const string &str, int &i);
 
-// считываем число и следующий знак
+// read the number and the next operator
 void numOp(const string &str, int &i, double &num, char &op, bool &openP, bool &closeP, int &countP);
 
-// калькулятор
+// calculation
 double calculate(const string &str, int &i, double a, double b, char op1, char op2, bool &openP, bool &closeP, int &countP);
 
 string calculator(const string &str);

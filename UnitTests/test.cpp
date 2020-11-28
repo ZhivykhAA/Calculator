@@ -54,9 +54,9 @@ TEST(Calculator, Test13) {
 }
 
 TEST(Calculator, Test14) {
-	ASSERT_EQ("ошибка при делении на 0", calculator("5 + 7 / 0"));
+	ASSERT_EQ("error when dividing by 0", calculator("5 + 7 / 0"));
 }
 
 TEST(Calculator, Test15) {
-	ASSERT_EQ("некорректный ввод, строка содержит недопустимое выражение abc", calculator("1.1 + 2.1 + abc"));
+	ASSERT_EQ("invalid input, the string contains an invalid expression abc", calculator("1.1 + 2.1 + abc"));
 }
